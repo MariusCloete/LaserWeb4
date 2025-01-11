@@ -39,7 +39,7 @@ docker build -f Dockerfile.release -t laserweb:release .
 ```
 
 ## Community
-Please use the community forum on https://forum.makerforums.info/c/laserweb-cncweb for questions and support.
+Please use the community forum on https://forum.makerforums.info/c/cad-cam/laserweb-cncweb/78 for questions and support.
 Please only report confirmed bugs on the git [Issues tab](https://github.com/LaserWeb/LaserWeb4/issues).
 
 ## Supported firmwares
