@@ -306,9 +306,21 @@ Cam = connect(
             }
         },
         loadGcode: e => {
+            let files = (e && e.target && e.target.files)
+                || (e && e.currentTarget && e.currentTarget.files)
+                || (e && e.dataTransfer && e.dataTransfer.files)
+                || (Array.isArray(e) ? e : null);
+            let file = files && files.length ? files[0] : null;
+
+            if (!file) {
+                CommandHistory.error('No G-Code file selected.')
+                return;
+            }
+
             let reader = new FileReader;
-            reader.onload = () => dispatch(setGcode(reader.result));
-            reader.readAsText(e.target.files[0]);
+            reader.onload = () => dispatch(setGcode(reader.result || ''));
+            reader.onerror = () => CommandHistory.error('Failed to read G-Code file: ' + file.name);
+            reader.readAsText(file);
         },
     }),
 )(Cam);
