@@ -33,6 +33,7 @@ jobs:
           tags: |
             type=sha,prefix=sha-
             type=raw,value=latest
+            type=raw,value=${{ github.run_number }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
