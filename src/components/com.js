@@ -70,11 +70,12 @@ class Com extends React.Component {
         let server = settings.comServerIP;
         let protocol = settings.comServerSecure ? 'wss:' : 'ws:';
         CommandHistory.write('Connecting to Server @ ' + server, CommandHistory.INFO);
-        //console.log('Connecting to Server ' + server);
+        console.log('[DEBUG] Connecting to Server:', server, 'Protocol:', protocol);
         socket = io(protocol + '//' + server);
 
         socket.on('connect', function(data) {
             serverConnected = true;
+            console.log('[DEBUG] Server connection established');
             $('#connectS').addClass('disabled');
             $('#disconnectS').removeClass('disabled');
             //socket.emit('firstLoad');
@@ -83,6 +84,7 @@ class Com extends React.Component {
         });
 
         socket.on('disconnect', function() {
+            console.log('[DEBUG] Server disconnected');
             CommandHistory.error('Disconnected from Server ' + settings.comServerIP)
             //console.log('Disconnected from Server ' + settings.commServerIP);
             serverConnected = false;
@@ -91,6 +93,16 @@ class Com extends React.Component {
             machineConnected = false;
             $('#connect').removeClass('disabled');
             $('#disconnect').addClass('disabled');
+        });
+
+        socket.on('connect_error', function(error) {
+            console.error('[DEBUG] Server connection error:', error);
+            CommandHistory.error('Server connection error: ' + (error.message || error))
+        });
+
+        socket.on('error', function(error) {
+            console.error('[DEBUG] Socket error:', error);
+            CommandHistory.error('Socket error: ' + (error.message || error))
         });
 
 //        socket.on('open', function(data) {
@@ -132,6 +144,7 @@ class Com extends React.Component {
 
         socket.on('ports', function (data) {
             serverConnected = true;
+            console.log('[DEBUG] Ports received from server:', data);
             $('#connectS').addClass('disabled');
             $('#disconnectS').removeClass('disabled');
             if (data.length > 0) {
@@ -141,11 +154,11 @@ class Com extends React.Component {
                 for (var i = 0; i < data.length; i++) {
                       ports.push(data[i].path);
                 }
-                //console.log('ports: ' + ports);
-                //CommandHistory.write('Serial ports detected: ' + ports);
+                console.log('[DEBUG] Available serial ports:', ports);
+                CommandHistory.write('Serial ports detected: ' + ports.join(', '), CommandHistory.INFO);
             } else {
-                console.log('server sent empty serial ports list');
-                CommandHistory.error('No serial ports found on server!');
+                console.error('[DEBUG] Server sent empty serial ports list - possible permission issue on server');
+                CommandHistory.error('No serial ports found on server! Check server permissions.');
             }
         });
 
@@ -190,21 +203,23 @@ class Com extends React.Component {
         });
 
         socket.on('connectStatus', function (data) {
-            console.log('connectStatus: ' + data);
+            console.log('[DEBUG] connectStatus received:', data);
             serverConnected = true;
             $('#connectS').addClass('disabled');
             $('#disconnectS').removeClass('disabled');
             if (data.indexOf('opened') >= 0) {
+                console.log('[DEBUG] Machine connection opened successfully');
                 machineConnected = true;
                 $('#connect').addClass('disabled');
                 $('#disconnect').removeClass('disabled');
                 CommandHistory.write('Machine connected', CommandHistory.SUCCESS);
             }
             if (data.indexOf('Connect') >= 0) {
+                console.error('[DEBUG] Machine connection failed or closed. Status:', data);
                 machineConnected = false;
                 $('#connect').removeClass('disabled');
                 $('#disconnect').addClass('disabled');
-                CommandHistory.error('Machine disconnected')
+                CommandHistory.error('Machine disconnected: ' + data)
             }
         });
 
@@ -463,32 +478,40 @@ class Com extends React.Component {
         var connectPort = this.props.settings.connectPort.trim();
         var connectBaud = this.props.settings.connectBaud;
         var connectIP = this.props.settings.connectIP;
+        console.log('[DEBUG] handleConnectMachine called with:', {connectVia, connectPort, connectBaud, connectIP});
         switch (connectVia) {
             case 'USB':
                 if (!connectPort) {
                     CommandHistory.write('Could not connect! -> please select port', CommandHistory.DANGER);
+                    console.error('[DEBUG] USB connection failed: no port selected');
                     break;
                 }
                 if (!connectBaud) {
                     CommandHistory.write('Could not connect! -> please select baudrate', CommandHistory.DANGER);
+                    console.error('[DEBUG] USB connection failed: no baudrate selected');
                     break;
                 }
+                console.log('[DEBUG] Attempting USB connection to', connectPort, 'at', connectBaud, 'baud');
                 CommandHistory.write('Connecting Machine @ ' + connectVia + ',' + connectPort + ',' + connectBaud + 'baud', CommandHistory.INFO);
                 socket.emit('connectTo', connectVia + ',' + connectPort + ',' + connectBaud);
                 break;
             case 'Telnet':
                 if (!connectIP) {
                     CommandHistory.write('Could not connect! -> please enter IP address', CommandHistory.DANGER);
+                    console.error('[DEBUG] Telnet connection failed: no IP address');
                     break;
                 }
+                console.log('[DEBUG] Attempting Telnet connection to', connectIP);
                 CommandHistory.write('Connecting Machine @ ' + connectVia + ',' + connectIP, CommandHistory.INFO);
                 socket.emit('connectTo', connectVia + ',' + connectIP);
                 break;
             case 'ESP8266':
                 if (!connectIP) {
                     CommandHistory.write('Could not connect! -> please enter IP address', CommandHistory.DANGER);
+                    console.error('[DEBUG] ESP8266 connection failed: no IP address');
                     break;
                 }
+                console.log('[DEBUG] Attempting ESP8266 connection to', connectIP);
                 CommandHistory.write('Connecting Machine @ ' + connectVia + ',' + connectIP, CommandHistory.INFO);
                 socket.emit('connectTo', connectVia + ',' + connectIP);
                 break;
