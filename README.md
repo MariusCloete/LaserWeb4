@@ -33,9 +33,9 @@ docker run -it -device=/dev/ttyUSB0 --rm -p 8000:8000 laserweb:dev
 ```
 - connect to app: http://localhost:8000
 
-To build the release version:
+To build the test version:
 ```sh
-docker build -f Dockerfile.release -t laserweb:release .
+docker build -f Dockerfile.test -t laserweb:release .
 ```
 
 ## Community
