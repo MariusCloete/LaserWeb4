@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  laserweb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+      - /dev/ttyUSB1:/dev/ttyUSB1
+    environment:
+      - NODE_ENV=production
+      - VERBOSE_LEVEL=1
+      - FIRMWARE_WAIT_TIME=10
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+    privileged: true
+    restart: unless-stopped
+    container_name: laserweb4-debug

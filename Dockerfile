@@ -9,7 +9,15 @@ COPY . .
 RUN apk add --no-cache make gcc g++ python python3 linux-headers eudev git
 RUN git config --global url."https://github.com".insteadOf "ssh://git@github.com"
 RUN npm set progress=false && npm config set depth 0
+
+# Install LaserWeb4 frontend dependencies
 RUN npm ci
+
+# Install lw.comm-server dependencies
+WORKDIR /app/lw.comm-server
+RUN npm ci
+
+WORKDIR /app
 
 #
 # ---- Release ----
@@ -27,4 +35,5 @@ COPY --from=base /app ./
 
 EXPOSE 8000
 
-CMD [ "npm", "run", "start-server" ]
+# Use the local server with enhanced logging
+CMD [ "node", "lw.comm-server/server.js" ]
