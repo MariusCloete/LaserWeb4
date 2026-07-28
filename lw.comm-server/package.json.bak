@@ -1,0 +1,83 @@
+{
+  "name": "lw.comm-server",
+  "version": "4.1.0",
+  "license": "AGPL-3.0",
+  "description": "Unified communications server for LaserWeb/CNCweb",
+  "author": "github.com/LaserWeb",
+  "contributors": [
+    "Claudio Prezzi <claudio.prezzi@gmail.com>"
+  ],
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LaserWeb/lw.comm-server.git"
+  },
+  "dependencies": {
+    "chalk": "4.x",
+    "dotenv": "10.x",
+    "ip": "^1.1.5",
+    "node-hid": "2.1.1",
+    "node-static": "*",
+    "request": "*",
+    "serialport": "9.x",
+    "socket.io": "4.x",
+    "ws": "8.x"
+  },
+  "bugs": {
+    "url": "https://github.com/LaserWeb/lw.comm-server/issues"
+  },
+  "homepage": "https://laserweb.yurl.ch",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "update_frontend": "git rm app/ -r -f && cp ../LaserWeb4/dist/. app/ -r -u && git add app/"
+  },
+  "keywords": [
+    "laserweb",
+    "cncweb",
+    "grbl",
+    "smoothieware",
+    "tinyg",
+    "usb",
+    "serial",
+    "ethernet",
+    "gateway",
+    "ESP8266"
+  ],
+  "engines": {
+    "node": ">=12.22.5",
+    "npm": ">=6.14.15"
+  },
+  "build": {
+    "appId": "xyz.laserweb",
+    "productName": "LaserWeb",
+    "asar": true,
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "icon": "app/icon.ico"
+    },
+    "mac": {
+      "icon": "app/icons.icns",
+      "category": "public.app-category.graphics-design"
+    },
+    "dmg": {
+      "icon": "app/icons.icns",
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    }
+  }
+}
