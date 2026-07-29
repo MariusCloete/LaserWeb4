@@ -6,7 +6,7 @@ COPY . .
 
 # Install build dependencies and serial port tools
 # eudev is needed for udev device access, required for USB/serial port enumeration
-RUN apk add --no-cache make gcc g++ python python3 linux-headers eudev git pkgconfig libusb-dev
+RUN apk add --no-cache make gcc g++ python python3 linux-headers eudev eudev-dev git pkgconfig libusb-dev
 RUN git config --global url."https://github.com".insteadOf "ssh://git@github.com"
 RUN npm set progress=false && npm config set depth 0
 
