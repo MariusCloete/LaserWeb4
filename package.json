@@ -4,7 +4,7 @@
   "description": "LaserWeb",
   "main": "./src/index.js",
   "scripts": {
-    "start-server": "node node_modules/lw.comm-server/server.js",
+    "start-server": "node lw.comm-server/server.js",
     "start-app": "webpack-dev-server --progress --colors --open",
     "start-prod": "webpack-dev-server -p --progress --colors --open",
     "start": "npm-run-all -p -r start-app start-server",
