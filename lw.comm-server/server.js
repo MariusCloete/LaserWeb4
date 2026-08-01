@@ -26,9 +26,34 @@
 */
 
 const config = require('./config');
-const serialport = require('serialport');
-var SerialPort = serialport;
-const Readline = SerialPort.parsers.Readline;
+let serialport;
+let SerialPort;
+let Readline;
+
+try {
+    serialport = require('serialport');
+    SerialPort = serialport;
+    Readline = SerialPort.parsers.Readline;
+} catch (err) {
+    console.warn('serialport native bindings are unavailable; serial connections are disabled');
+    Readline = class ReadlineFallback {};
+    SerialPort = class UnsupportedSerialPort {
+        constructor() {
+            throw err;
+        }
+        static list() {
+            return Promise.resolve([]);
+        }
+    };
+    serialport = {
+        list() {
+            return Promise.resolve([]);
+        },
+        parsers: {
+            Readline
+        }
+    };
+}
 const websockets = require('socket.io');
 const http = require('http');
 const WebSocket = require('ws');
@@ -165,7 +190,21 @@ var io = websockets(app, {
 
 
 // MPG communication
-const HID = require("node-hid");
+let HID;
+try {
+    HID = require("node-hid");
+} catch (err) {
+    HID = {
+        devices() {
+            return [];
+        },
+        HID: class UnsupportedHID {
+            constructor() {
+                throw err;
+            }
+        }
+    };
+}
 var vendorId = 4302;    // for MPG: XHC HB04-L (0x10CE)
 var productId = 60272;  // for MPG: XHC HB04-L (0xEB70)
 var mpgType = config.mpgType;
