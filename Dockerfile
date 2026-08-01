@@ -12,6 +12,7 @@ RUN npm set progress=false && npm config set depth 0
 
 # Install LaserWeb4 frontend dependencies
 RUN npm ci
+RUN npm run bundle-dev
 
 # Install lw.comm-server dependencies
 WORKDIR /app/lw.comm-server

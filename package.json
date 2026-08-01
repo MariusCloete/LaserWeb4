@@ -5,6 +5,7 @@
   "main": "./src/index.js",
   "scripts": {
     "start-server": "node lw.comm-server/server.js",
+    "prestart-server": "npm run bundle-dev",
     "start-app": "webpack-dev-server --progress --colors --open",
     "start-prod": "webpack-dev-server -p --progress --colors --open",
     "start": "npm-run-all -p -r start-app start-server",
