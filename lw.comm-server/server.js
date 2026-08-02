@@ -179,6 +179,7 @@ if (config.IP == "0.0.0.0") {
     writeLog(chalk.yellow('Server binding to IP: ' + config.IP + ' on port: ' + config.webPort), 1);
 }
 app.listen(config.webPort, config.IP);
+writeLog(chalk.green('[DEBUG] listening on port'), 0);
 var io = websockets(app, {
     maxHttpBufferSize: config.socketMaxDataSize,
     cors: {
@@ -188,8 +189,7 @@ var io = websockets(app, {
     pingTimeout:  config.socketPingTimeout,
     pingInterval: config.socketPingInterval
 });
-
-
+writeLog(chalk.green('[DEBUG] open websocket'), 0);
 // MPG communication
 let HID;
 try {
@@ -405,7 +405,7 @@ io.sockets.on('connection', function (appSocket) {
     appSocket.on('connectTo', function (data) { // If a user picks a port to connect to, open a Node SerialPort Instance to it
         data = data.split(',');
         let reset = false;
-        if (config.resetOnConnect == 1) reset = true;
+        if (config.resetOnConnect === 1) reset = true;
         writeLog(chalk.yellow('INFO: ') + chalk.blue('Connecting to ' + data), 1);
         if (!isConnected) {
             connectionType = data[0].toLowerCase();
