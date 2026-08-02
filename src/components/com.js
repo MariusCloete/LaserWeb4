@@ -121,7 +121,7 @@ class Com extends React.Component {
             serverConnected = true;
             let serverVersion = data.serverVersion;
             dispatch(setSettingsAttrs({comServerVersion: serverVersion}));
-            //CommandHistory.write('Server version: ' + serverVersion, CommandHistory.INFO);
+            CommandHistory.write('Server version: ' + serverVersion, CommandHistory.INFO);
             console.log('serverVersion: ' + serverVersion);
         });
 
