@@ -68,10 +68,11 @@ class Com extends React.Component {
         let that = this;
         let {settings, dispatch} = this.props;
         let server = settings.comServerIP;
-        let protocol = settings.comServerSecure ? 'wss:' : 'ws:';
+        let normalizedServer = server.replace(/^(https?|wss?):\/\//, '');
+        let protocol = settings.comServerSecure ? 'https:' : 'http:';
         CommandHistory.write('Connecting to Server @ ' + server, CommandHistory.INFO);
-        console.log('[DEBUG] Connecting to Server:', server, 'Protocol:', protocol);
-        socket = io(protocol + '//' + server);
+        console.log('[DEBUG] Connecting to Server:', normalizedServer, 'Protocol:', protocol);
+        socket = io(protocol + '//' + normalizedServer);
 
         socket.on('connect', function(data) {
             serverConnected = true;
