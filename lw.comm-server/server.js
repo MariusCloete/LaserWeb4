@@ -266,8 +266,8 @@ io.sockets.on('connection', function (appSocket) {
     // check available ports
     serialport.list().then(ports => {
         portsList = ports;
-        let portPaths= new Array();
-        for (var i = 0; i < ports.length; i++) {
+        let portPaths= [];
+        for (let i = 0; i < ports.length; i++) {
               portPaths.push(ports[i].path);
         }
         writeLog(chalk.yellow('Connect(' + connections.indexOf(appSocket) + ') ') + chalk.blue('Sending Ports list: ' + portPaths), 1);
@@ -277,11 +277,11 @@ io.sockets.on('connection', function (appSocket) {
     if (!listPortsLoop) {
         listPortsLoop = setInterval(function () {
             serialport.list().then(ports => {
-                if (JSON.stringify(ports) != JSON.stringify(portsList)) {
+                if (JSON.stringify(ports) !== JSON.stringify(portsList)) {
                     portsList = ports;
                     io.sockets.emit('ports', portsList);
-                    let portPaths= new Array();
-                    for (var i = 0; i < ports.length; i++) {
+                    let portPaths= [];
+                    for (let i = 0; i < ports.length; i++) {
                           portPaths.push(ports[i].path);
                     }
                     writeLog(chalk.yellow('Ports changed: ' + portPaths), 1);

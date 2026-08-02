@@ -6,7 +6,7 @@ var config = {};
 
 config.webPort = process.env.WEB_PORT || 8000;
 config.IP = process.env.IP || '0.0.0.0';
-config.serverVersion = '4.1.000 (Enhanced Firmware Detection)';
+config.serverVersion = '4.1.001 (Enhanced Firmware Detection)';
 config.apiVersion = '4.0.8';
 
 config.verboseLevel = process.env.VERBOSE_LEVEL || 1;
