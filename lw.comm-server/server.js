@@ -25,6 +25,15 @@
 
 */
 
+if (!Object.fromEntries) {
+    Object.fromEntries = function(entries) {
+        return Array.from(entries).reduce(function(result, entry) {
+            result[entry[0]] = entry[1];
+            return result;
+        }, {});
+    };
+}
+
 const config = require('./config');
 let serialport;
 let SerialPort;
