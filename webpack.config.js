@@ -8,7 +8,7 @@ var isDevServer = process.argv.some(function(arg) {
 });
 
 var entry = [
-    'babel-polyfill', './polyfills/browser-crypto.js', './index.js'
+    'babel-polyfill', './index.js'
 ];
 
 var plugins = [

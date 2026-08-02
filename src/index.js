@@ -3,10 +3,30 @@ import { render } from 'react-dom'
 import { compose, applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
+import uuidv4 from 'uuid/v4';
 
 import persistState, {mergePersistedState} from 'redux-localstorage'
 import adapter from 'redux-localstorage/lib/adapters/localStorage';
 import filter from 'redux-localstorage-filter';
+
+const root = typeof globalThis !== 'undefined' ? globalThis : (typeof self !== 'undefined' ? self : window);
+let cryptoObject = root.crypto || root.msCrypto;
+
+if (!cryptoObject) {
+    cryptoObject = {};
+    try {
+        Object.defineProperty(root, 'crypto', {
+            value: cryptoObject,
+            configurable: true
+        });
+    } catch (error) {
+        root.crypto = cryptoObject;
+    }
+}
+
+if (typeof cryptoObject.randomUUID !== 'function') {
+    cryptoObject.randomUUID = uuidv4;
+}
 
 export const LOCALSTORAGE_KEY = 'LaserWeb';
 export const DEBUG_KEY = "LaserwebDebug";
