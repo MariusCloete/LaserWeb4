@@ -3,12 +3,26 @@ var path = require('path');
 
 var src_path = path.resolve('./src');
 var dist_path = path.resolve('./dist');
+var isDevServer = process.argv.some(function(arg) {
+    return arg.indexOf('webpack-dev-server') !== -1;
+});
+
+var entry = [
+    'babel-polyfill', './polyfills/browser-crypto.js', './index.js'
+];
+
+var plugins = [
+    new webpack.ProvidePlugin({$: 'jquery', jQuery: 'jquery'}),
+];
+
+if (isDevServer) {
+    entry.unshift('webpack-dev-server/client?http://0.0.0.0:8080', 'webpack/hot/only-dev-server');
+    plugins.push(new webpack.HotModuleReplacementPlugin());
+}
 
 module.exports = {
     context: src_path,
-    entry: [
-        'webpack-dev-server/client?http://0.0.0.0:8080', 'webpack/hot/only-dev-server', 'babel-polyfill', './index.js'
-    ],
+    entry: entry,
     output: {
         path: dist_path,
         filename: 'index.js'
@@ -56,15 +70,12 @@ module.exports = {
             },
         ]
     },
-    plugins: [
-        new webpack.ProvidePlugin({$: 'jquery', jQuery: 'jquery'}),
-        new webpack.HotModuleReplacementPlugin(),
-    ],
+    plugins: plugins,
     devServer: {
         contentBase: dist_path,
         inline: false,
         hot: true,
-        host: 'localhost' // originally 0.0.0.0
+        host: '0.0.0.0'
     },
     devtool: 'source-map'
 };
