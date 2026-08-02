@@ -29,7 +29,7 @@ const config = require('./config');
 let serialport;
 let SerialPort;
 let Readline;
-
+let sdFolder = '';
 try {
     serialport = require('serialport');
     SerialPort = serialport;
@@ -170,6 +170,7 @@ var app = http.createServer(function (req, res) {
             }
         });
     }
+    writeLog(chalk.green('[DEBUG] Server created'), 0);
 });
 
 if (config.IP == "0.0.0.0") {
@@ -2170,6 +2171,7 @@ io.sockets.on('connection', function (appSocket) {
     });
 
     appSocket.on('sd.cd', function (data) {  // Change directory
+
         if (isConnected) {
             writeLog(chalk.red('sd.cd'), 1);
             switch (firmware) {
@@ -3741,7 +3743,7 @@ function getStepDistance(){
 
 function setStepDistance() {
     stepDistance = stepDistance + 1;
-    if (stepDistance == 4) {
+    if (stepDistance === 4) {
         stepDistance = 0;
     }
 }
@@ -3749,16 +3751,15 @@ function setStepDistance() {
 //Continuous is the machine will continue to jog as long as there are event dial events coming in.
 function doJogContinuous(dialSetting, cmd) {
     //build our jog command
-    var velocity = cmd.value[1];
+    let velocity = cmd.value[1];
     //We need to figure out if this is a negative move or a positive move
+    let sign = ""
     if (velocity > 0xaa) {
         sign = "-";
         velocity = 255 - velocity; // When rotating counter clockwise the velocity
         //Comes in as 0xfe for 1 which we will subtract from 0xff to get a sane number
-    } else {
-        sign = ""
     }
-    tmpCalc = (velocity * 10) * velocityMin;
+    let tmpCalc = (velocity * 10) * velocityMin;
     if(tmpCalc > calculatedVelocity){
         calculatedVelocity = tmpCalc; //If we are moving faster than previously we will increase our speed.
     }
@@ -3769,13 +3770,13 @@ function doJogContinuous(dialSetting, cmd) {
 
 //Incremental Will only single step then stop and wait for another click of the jog dial.
 function doJogIncremental(dialSetting, cmd) {
-    var sign = 1;
+    let sign = 1;
     //build our jog command
     //We need to figure out if this is a negative move or a positive move
     if (cmd.value[1] > 0xaa) {
         sign = -1;
     }
-    var feed = 3000;
+    let feed = 3000;
     jog({dir: dialSetting, dist: sign * getStepDistance(), feed: feed});
 }
 
