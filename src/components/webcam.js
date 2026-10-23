@@ -139,6 +139,10 @@ export class VideoPort extends React.Component {
                             let src=this.props.settings.toolWebcamUrl;
                                 src+=(src.indexOf('?')>=0)? '&':'?';
                                 src+='time='+(new Date().getTime()/1000)
+                                img.onerror = () => {
+                                    // Some webcams provide HTML wrappers for stream endpoints; fall back to iframe rendering.
+                                    selfNode.style.display = 'none';
+                                };
                                 img.src= src;
                                 selfNode.style.display = 'block'
                             this.__timeout=setTimeout(imageFetch,5000)
@@ -209,6 +213,8 @@ export class VideoPort extends React.Component {
             element=<canvas ref="display" style={{width:"100%", height:"auto"}}/>
         } else if (!this.props.settings.toolWebcamUrl.length) {
             element = <video ref="display" style={{width:"100%",height:"auto"}} autoPlay/>
+        } else if (/\.(html|php)(\?|$)/i.test(this.props.settings.toolWebcamUrl)) {
+            element = <iframe ref="display" src={this.props.settings.toolWebcamUrl} style={{width:"100%",height: this.props.height || 240,border:0}} />
         } else {
             element = <img ref="display" style={{width:"100%",height:"auto"}} draggable="false"/>
         }
